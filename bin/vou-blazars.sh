@@ -766,7 +766,7 @@ do
             echo conesearch --db ${HERE}/cats2.ini --catalog 3FGL --ra $rar  --dec $decr --radius 20 --runit arcmin --columns default -o tmp/${pidnm}3fgl.$nn.2.csv >> tmp/${pidnm}vosearch.txt
             echo conesearch --db ${HERE}/cats2.ini --catalog 2FHL --ra $rar  --dec $decr --radius 20 --runit arcmin --columns default -o tmp/${pidnm}2fhl.$nn.2.csv >> tmp/${pidnm}vosearch.txt
             echo conesearch --db ${HERE}/cats2.ini --catalog 4FGL-DR3 --ra $rar --dec $decr --radius 20 --runit arcmin --columns default -o tmp/${pidnm}4fgldr3.$nn.2.csv >> tmp/${pidnm}vosearch.txt
-            echo conesearch --db ${HERE}/cats2.ini --catalog STEVECAT --ra $rar --dec $decr --radius 20 --runit arcmin --columns default -o tmp/${pidnm}stevecat.1.csv >> tmp/${pidnm}vosearch.txt
+            echo conesearch --db ${HERE}/cats2.ini --catalog STEVECAT --ra $rar --dec $decr --radius 20 --runit arcmin --columns default -o tmp/${pidnm}stevecat.2.csv >> tmp/${pidnm}vosearch.txt
             echo conesearch --db ${HERE}/cats2.ini --catalog 3FHL --ra $rar  --dec $decr --radius 20 --runit arcmin --columns default -o tmp/${pidnm}3fhl.$nn.2.csv >> tmp/${pidnm}vosearch.txt
             echo conesearch --db ${HERE}/cats2.ini --catalog 2BIGB --ra $rar  --dec $decr --radius 10 --runit arcmin --columns default -o tmp/${pidnm}2bigb.$nn.2.csv >> tmp/${pidnm}vosearch.txt
             echo conesearch --db ${HERE}/cats2.ini --catalog 2AGILE --ra $rar  --dec $decr --radius 50 --runit arcmin --columns default -o tmp/${pidnm}2agile.$nn.2.csv >> tmp/${pidnm}vosearch.txt
@@ -946,6 +946,8 @@ do
       rased=`echo $racand | sed 's/\./_/g'`
       decsed=`echo $deccand | sed 's/\./_/g' | sed 's/-/m/g'`
       ${BINF}/convert_sed tmp/${pidnm}Sed.txt tmp/${pidnm}Out4SedTool.txt tmp/${pidnm}Sed.csv
+      #adding, if present, STEVECAT SEDs:
+      python3 utils/read_source_stevecat.py tmp/${pidnm}stevecat.2.csv >> tmp/${pidnm}Sed.csv #PYTHON2 does not like STEVECAT example formatting
       [ -d Results/SEDtool -a -f tmp/${pidnm}Out4SedTool.txt ] && cp tmp/${pidnm}Out4SedTool.txt Results/SEDtool/$rased"_"$decsed"_"sedtool.txt
       if [ $runmode != l -a $plotsed != N ]; then
          rm -f tmp/${pidnm}PySED.png
