@@ -5,13 +5,13 @@ from astropy.table import Table,vstack
 from scipy import constants
 import pandas as pd
 import sys
-# E = h nu, and we want E in eV
-h_eV_Hz = constants.h / constants.value("electron volt-joule relationship") #h is 6.63e-34 J/Hz, and 1 eV = 1.60e-19 J
-eV2erg = constants.value("electron volt-joule relationship")/constants.erg #constants.erg is one erg in joule
-SteVeCATPath = "/home/utente/Lavoro/CTA/Catalogs/STeVeCat/STeVECat/"
-ref_table = Table.read(SteVeCATPath+"/table_spectra.csv")
-ref_table.add_index("source_name") #indexing table by fileID
 def read_source(source_name):
+    # E = h nu, and we want E in eV
+    h_eV_Hz = constants.h / constants.value("electron volt-joule relationship") #h is 6.63e-34 J/Hz, and 1 eV = 1.60e-19 J
+    eV2erg = constants.value("electron volt-joule relationship")/constants.erg #constants.erg is one erg in joule
+    SteVeCATPath = "/home/utente/Lavoro/CTA/Catalogs/STeVeCat/STeVECat/"
+    ref_table = Table.read(SteVeCATPath+"/table_spectra.csv")
+    ref_table.add_index("source_name") #indexing table by fileID
     outputsed = Table()
     sourceinfo = ref_table.loc[source_name] #access all references for this source in the STeVECat
     for ifile in range(len(sourceinfo)):
