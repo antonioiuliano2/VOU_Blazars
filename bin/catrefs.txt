@@ -15,6 +15,7 @@ IPCSL Elvis et al. 1992, ApJS, 80, 257!
 Chandra-CSC2 Evans et al. 2010, ApJS, 189, 37!
 MAXI TBD!
 eROSITA-EDR Brunner et al., 2022, A&A, 661, A1!
+eROSITA-eRASS1 Merloni et al., 2024, J/A+A/682/A34!
 ZWCLUSTERS Zwicky et al. 1968, VizieR, VII/190!
 PSZ2 The Planck Collaboration, 2016, A&A, 594, A27!
 ABELL Abell et al. 1989, ApJS, 70, 1!
