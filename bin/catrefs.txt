@@ -92,5 +92,4 @@ NuBlazar Middei et al. 2022, MNRAS, 514, 3179!
 FermiMeV Principe et al. 2018, A&A, 618, A22! 
 FMonLC Fermi Monitored sources! 
 VERITAS TBD!
-STEVECAT arXiv:2304.00835 
 MAGIC TBD!
