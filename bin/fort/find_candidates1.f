@@ -28,7 +28,7 @@ c
       INTEGER*4 no_found,sfound,rfound,s,aim,xray_type,ncat,ifound
       INTEGER*4 iradio,ixmm,irosat,iswift,iipc,iother,ichandra,ibmw
       INTEGER*4 rah, ram, id, dm ,filen,ix,xpts,iarr,iconfig
-      INTEGER*4 igrb,ierosita,imaxi,ibigb,igam,arrsize(30)
+      INTEGER*4 igrb,ierosita,ierosita_erass,imaxi,ibigb,igam,arrsize(30)
       REAL*8 ra, dec,dist,ra_center,dec_center,radius
       real*8 ra_bary,dec_bary,ra_cattemp,dec_cattemp
       REAL*4 min_dist_rosat,min_dist_xmm,min_dist_ipc,min_dist_cluster
@@ -68,6 +68,10 @@ c
       real*4,dimension(:),allocatable :: poserr_erosita,poserr_bmw
       real*4,dimension(:,:),allocatable :: flux_erosita,fluxL_erosita,fluxU_erosita,Ferr_erosita,frequency_erosita
       real*4,dimension(:),allocatable :: flux_bmw,fluxL_bmw,fluxU_bmw,Ferr_bmw,frequency_bmw
+
+      real*8,dimension(:),allocatable :: ra_erosita_erass,dec_erosita_erass
+      real*4,dimension(:),allocatable :: poserr_erosita_erass
+      real*4,dimension(:,:),allocatable :: flux_erosita_erass,fluxL_erosita_erass,fluxU_erosita_erass,Ferr_erosita_erass,frequency_erosita_erass
 
       integer*4,dimension(:),allocatable :: ipc_type,maxi_type
       real*8,dimension(:),allocatable :: ra_ipc,dec_ipc,ra_maxi,dec_maxi
@@ -113,6 +117,7 @@ c
       ibigb=0
       igrb=0
       ierosita=0
+      ierosita_erass=0
       radian = 45.0/atan(1.0)
       flux2nufnu_nvss=1.4e9*1.e-26
       flux2nufnu_sumss=8.43e8*1.e-26 !assumed radio alpha=0.2 !f_0.8 to f_1.4
@@ -222,6 +227,8 @@ c      write(*,*) arrsize
       allocate(poserr_chandra(arrsize(9)),ra_chandra(arrsize(9)),dec_chandra(arrsize(9)))
       allocate(flux_rosat(arrsize(8)),Ferr_rosat(arrsize(8)),FluxU_rosat(arrsize(8)),FluxL_rosat(arrsize(8)),frequency_rosat(arrsize(8)))
       allocate(flux_chandra(arrsize(9),5),FluxU_chandra(arrsize(9),5),FluxL_chandra(arrsize(9),5),frequency_chandra(arrsize(9),5))
+      allocate(poserr_erosita_erass(arrsize(10)),ra_erosita_erass(arrsize(10)),dec_erosita_erass(arrsize(10)))
+      allocate(flux_erosita_erass(arrsize(10),10),fluxL_erosita_erass(arrsize(10),10),fluxU_erosita_erass(arrsize(10),10),Ferr_erosita_erass(arrsize(10),10),frequency_erosita_erass(arrsize(10),10))
       allocate(poserr_erosita(arrsize(10)),ra_erosita(arrsize(10)),dec_erosita(arrsize(10)))
       allocate(poserr_bmw(arrsize(11)),ra_bmw(arrsize(11)),dec_bmw(arrsize(11)))
       allocate(flux_erosita(arrsize(10),8),fluxL_erosita(arrsize(10),8),fluxU_erosita(arrsize(10),8),Ferr_erosita(arrsize(10),8),frequency_erosita(arrsize(10),8))
@@ -1604,6 +1611,310 @@ c end PG
             endif
             CALL RXgraphic_code(flux_maxi(imaxi,1),'X',code)
             write (13,'(f9.5,2x,f9.5,2x,i6)') abs(ra_maxi(imaxi)),dec_maxi(imaxi),int(code)
+c        I start getting the data from eROSITA_ERASS CATALOG
+         ELSE IF (catalog(1:13) == 'erosita_erass') THEN
+            ierosita_erass=ierosita_erass+1
+            ra_erosita_erass(ierosita_erass)=ra
+            dec_erosita_erass(ierosita_erass)=dec
+            is=ie
+            ie=index(string(is+1:len(string)),',')+is
+            if (is .ne. ie-1) read(string(is+1:ie-1),*) poserr_erosita_erass(ierosita_erass)
+            is=ie
+            ie=index(string(is+1:len(string)),',')+is
+            is=ie
+            ie=index(string(is+1:len(string)),',')+is
+            is=ie
+            ie=index(string(is+1:len(string)),',')+is
+            if (is .ne. ie-1) read(string(is+1:ie-1),*) flux_erosita_erass(ierosita_erass,1)
+            is=ie
+            ie=index(string(is+1:len(string)),',')+is
+            if (is .ne. ie-1) read(string(is+1:ie-1),*) Ferr_erosita_erass(ierosita_erass,1)
+            fluxU_erosita_erass(ierosita_erass,1)=flux_erosita_erass(ierosita_erass,1)+Ferr_erosita_erass(ierosita_erass,1)
+            fluxL_erosita_erass(ierosita_erass,1)=flux_erosita_erass(ierosita_erass,1)-Ferr_erosita_erass(ierosita_erass,1)
+            is=ie
+            ie=index(string(is+1:len(string)),',')+is
+ccc            if (is .ne. ie-1) read(string(is+1:ie-1),*)flux_erosita_erass(ierosita_erass,2)
+            is=ie
+            ie=index(string(is+1:len(string)),',')+is
+ccc            if (is .ne. ie-1) read(string(is+1:ie-1),*)Ferr_erosita_erass(ierosita_erass,2)
+            is=ie
+            ie=index(string(is+1:len(string)),',')+is
+            if (is .ne. ie-1) read(string(is+1:ie-1),*)flux_erosita_erass(ierosita_erass,2)
+c           Be careful of column order! Not FluxP1, FluxP2..FluxP7,eFluxP1..eFluxP7,EFluxP1.EFluxP7, but FluxP1, eFLuxP1, EFluxP1, FluxP2, eFluxP2, EFluxP2....
+            is=ie
+            ie=index(string(is+1:len(string)),',')+is
+            if (is .ne. ie-1) read(string(is+1:ie-1),*)Ferr_erosita_erass(ierosita_erass,2)
+            fluxL_erosita_erass(ierosita_erass,2)=flux_erosita_erass(ierosita_erass,2)-Ferr_erosita_erass(ierosita_erass,2)
+            is=ie
+            ie=index(string(is+1:len(string)),',')+is
+            if (is .ne. ie-1) read(string(is+1:ie-1),*)Ferr_erosita_erass(ierosita_erass,2)
+            fluxU_erosita_erass(ierosita_erass,2)=flux_erosita_erass(ierosita_erass,2)+Ferr_erosita_erass(ierosita_erass,2)
+
+            is=ie
+            ie=index(string(is+1:len(string)),',')+is
+            if (is .ne. ie-1) read(string(is+1:ie-1),*)flux_erosita_erass(ierosita_erass,3)
+            is=ie
+            ie=index(string(is+1:len(string)),',')+is
+            if (is .ne. ie-1) read(string(is+1:ie-1),*)Ferr_erosita_erass(ierosita_erass,3)
+            fluxL_erosita_erass(ierosita_erass,3)=flux_erosita_erass(ierosita_erass,3)-Ferr_erosita_erass(ierosita_erass,3)
+            is=ie
+            ie=index(string(is+1:len(string)),',')+is
+            if (is .ne. ie-1) read(string(is+1:ie-1),*)Ferr_erosita_erass(ierosita_erass,3)
+            fluxU_erosita_erass(ierosita_erass,3)=flux_erosita_erass(ierosita_erass,3)+Ferr_erosita_erass(ierosita_erass,3)
+
+            is=ie
+            ie=index(string(is+1:len(string)),',')+is
+            if (is .ne. ie-1) read(string(is+1:ie-1),*)flux_erosita_erass(ierosita_erass,4)
+            is=ie
+            ie=index(string(is+1:len(string)),',')+is
+            if (is .ne. ie-1) read(string(is+1:ie-1),*)Ferr_erosita_erass(ierosita_erass,4)
+            fluxL_erosita_erass(ierosita_erass,4)=flux_erosita_erass(ierosita_erass,4)-Ferr_erosita_erass(ierosita_erass,4)
+            is=ie
+            ie=index(string(is+1:len(string)),',')+is
+            if (is .ne. ie-1) read(string(is+1:ie-1),*)Ferr_erosita_erass(ierosita_erass,4)
+            fluxU_erosita_erass(ierosita_erass,4)=flux_erosita_erass(ierosita_erass,4)+Ferr_erosita_erass(ierosita_erass,4)
+
+            is=ie
+            ie=index(string(is+1:len(string)),',')+is
+            if (is .ne. ie-1) read(string(is+1:ie-1),*)flux_erosita_erass(ierosita_erass,5)
+            is=ie
+            ie=index(string(is+1:len(string)),',')+is
+            if (is .ne. ie-1) read(string(is+1:ie-1),*)Ferr_erosita_erass(ierosita_erass,5)
+            fluxL_erosita_erass(ierosita_erass,5)=flux_erosita_erass(ierosita_erass,5)-Ferr_erosita_erass(ierosita_erass,5)
+            is=ie
+            ie=index(string(is+1:len(string)),',')+is
+            if (is .ne. ie-1) read(string(is+1:ie-1),*)Ferr_erosita_erass(ierosita_erass,5)
+            fluxU_erosita_erass(ierosita_erass,5)=flux_erosita_erass(ierosita_erass,5)+Ferr_erosita_erass(ierosita_erass,5)
+            
+            is=ie
+            ie=index(string(is+1:len(string)),',')+is
+            if (is .ne. ie-1) read(string(is+1:ie-1),*)flux_erosita_erass(ierosita_erass,6)
+            is=ie
+            ie=index(string(is+1:len(string)),',')+is
+            if (is .ne. ie-1) read(string(is+1:ie-1),*)Ferr_erosita_erass(ierosita_erass,6)
+            fluxL_erosita_erass(ierosita_erass,6)=flux_erosita_erass(ierosita_erass,6)-Ferr_erosita_erass(ierosita_erass,6)
+            is=ie
+            ie=index(string(is+1:len(string)),',')+is
+            if (is .ne. ie-1) read(string(is+1:ie-1),*)Ferr_erosita_erass(ierosita_erass,6)
+            fluxU_erosita_erass(ierosita_erass,6)=flux_erosita_erass(ierosita_erass,6)+Ferr_erosita_erass(ierosita_erass,6)
+
+            is=ie
+            ie=index(string(is+1:len(string)),',')+is
+            if (is .ne. ie-1) read(string(is+1:ie-1),*)flux_erosita_erass(ierosita_erass,7)
+            is=ie
+            ie=index(string(is+1:len(string)),',')+is
+            if (is .ne. ie-1) read(string(is+1:ie-1),*)Ferr_erosita_erass(ierosita_erass,7)
+            fluxL_erosita_erass(ierosita_erass,7)=flux_erosita_erass(ierosita_erass,7)-Ferr_erosita_erass(ierosita_erass,7)
+            is=ie
+            ie=index(string(is+1:len(string)),',')+is
+            if (is .ne. ie-1) read(string(is+1:ie-1),*)Ferr_erosita_erass(ierosita_erass,7)
+            fluxU_erosita_erass(ierosita_erass,7)=flux_erosita_erass(ierosita_erass,7)+Ferr_erosita_erass(ierosita_erass,7)
+
+            is=ie
+            ie=index(string(is+1:len(string)),',')+is
+            if (is .ne. ie-1) read(string(is+1:ie-1),*)flux_erosita_erass(ierosita_erass,8)
+            is=ie
+            ie=index(string(is+1:len(string)),',')+is
+            if (is .ne. ie-1) read(string(is+1:ie-1),*)Ferr_erosita_erass(ierosita_erass,8)
+            fluxL_erosita_erass(ierosita_erass,8)=flux_erosita_erass(ierosita_erass,8)-Ferr_erosita_erass(ierosita_erass,8)
+            is=ie
+            ie=index(string(is+1:len(string)),',')+is
+            if (is .ne. ie-1) read(string(is+1:ie-1),*)Ferr_erosita_erass(ierosita_erass,8)
+            fluxU_erosita_erass(ierosita_erass,8)=flux_erosita_erass(ierosita_erass,8)+Ferr_erosita_erass(ierosita_erass,8)
+
+            is=ie
+            ie=index(string(is+1:len(string)),',')+is
+            if (is .ne. ie-1) read(string(is+1:ie-1),*)flux_erosita_erass(ierosita_erass,9)
+            is=ie
+            ie=index(string(is+1:len(string)),',')+is
+            if (is .ne. ie-1) read(string(is+1:ie-1),*)Ferr_erosita_erass(ierosita_erass,9)
+            fluxL_erosita_erass(ierosita_erass,9)=flux_erosita_erass(ierosita_erass,9)-Ferr_erosita_erass(ierosita_erass,9)
+            is=ie
+            ie=index(string(is+1:len(string)),',')+is
+            if (is .ne. ie-1) read(string(is+1:ie-1),*)Ferr_erosita_erass(ierosita_erass,9)
+            fluxU_erosita_erass(ierosita_erass,9)=flux_erosita_erass(ierosita_erass,9)+Ferr_erosita_erass(ierosita_erass,9)
+
+            is=ie
+            ie=index(string(is+1:len(string)),',')+is
+            if (is .ne. ie-1) read(string(is+1:ie-1),*)flux_erosita_erass(ierosita_erass,10)
+            is=ie
+            ie=index(string(is+1:len(string)),',')+is
+            if (is .ne. ie-1) read(string(is+1:ie-1),*)Ferr_erosita_erass(ierosita_erass,10)            
+            fluxL_erosita_erass(ierosita_erass,10)=flux_erosita_erass(ierosita_erass,10)-Ferr_erosita_erass(ierosita_erass,10)
+            is=ie
+            ie=index(string(is+1:len(string)),' ')+is
+            if (is .ne. ie-1) read(string(is+1:ie-1),*)Ferr_erosita_erass(ierosita_erass,10)                         
+            fluxU_erosita_erass(ierosita_erass,10)=flux_erosita_erass(ierosita_erass,10)+Ferr_erosita_erass(ierosita_erass,10)            
+c           Naturally, the last one does not end with ',' so it is replaced by ' '
+
+            call nhdeabsorb2 (0,0.2,2.3,0.9,nh,reduce,5)
+            flux_erosita_erass(ierosita_erass,1)=flux_erosita_erass(ierosita_erass,1)*reduce
+            fluxU_erosita_erass(ierosita_erass,1)=fluxU_erosita_erass(ierosita_erass,1)*reduce
+            fluxL_erosita_erass(ierosita_erass,1)=fluxL_erosita_erass(ierosita_erass,1)*reduce
+            call nhdeabsorb2 (0,0.2,0.5,0.9,nh,reduce,5)
+            flux_erosita_erass(ierosita_erass,2)=flux_erosita_erass(ierosita_erass,2)*reduce
+            fluxU_erosita_erass(ierosita_erass,2)=fluxU_erosita_erass(ierosita_erass,2)*reduce
+            fluxL_erosita_erass(ierosita_erass,2)=fluxL_erosita_erass(ierosita_erass,2)*reduce
+            call nhdeabsorb2 (0,0.5,1.,0.9,nh,reduce,5)
+            flux_erosita_erass(ierosita_erass,3)=flux_erosita_erass(ierosita_erass,3)*reduce
+            fluxU_erosita_erass(ierosita_erass,3)=fluxU_erosita_erass(ierosita_erass,3)*reduce
+            fluxL_erosita_erass(ierosita_erass,3)=fluxL_erosita_erass(ierosita_erass,3)*reduce
+            call nhdeabsorb2 (0,1.,2.,0.9,nh,reduce,5)
+            flux_erosita_erass(ierosita_erass,4)=flux_erosita_erass(ierosita_erass,4)*reduce
+            fluxU_erosita_erass(ierosita_erass,4)=fluxU_erosita_erass(ierosita_erass,4)*reduce
+            fluxL_erosita_erass(ierosita_erass,4)=fluxL_erosita_erass(ierosita_erass,4)*reduce
+            call nhdeabsorb2 (0,2.,4.5,0.9,nh,reduce,5)
+            flux_erosita_erass(ierosita_erass,5)=flux_erosita_erass(ierosita_erass,5)*reduce
+            fluxU_erosita_erass(ierosita_erass,5)=fluxU_erosita_erass(ierosita_erass,5)*reduce
+            fluxL_erosita_erass(ierosita_erass,5)=fluxL_erosita_erass(ierosita_erass,5)*reduce
+            call nhdeabsorb2 (0,0.5,2.,0.9,nh,reduce,5)
+            flux_erosita_erass(ierosita_erass,6)=flux_erosita_erass(ierosita_erass,6)*reduce
+            fluxU_erosita_erass(ierosita_erass,6)=fluxU_erosita_erass(ierosita_erass,6)*reduce
+            fluxL_erosita_erass(ierosita_erass,6)=fluxL_erosita_erass(ierosita_erass,6)*reduce
+            call nhdeabsorb2 (0,2.3,5.,0.9,nh,reduce,5)
+            flux_erosita_erass(ierosita_erass,7)=flux_erosita_erass(ierosita_erass,7)*reduce
+            fluxU_erosita_erass(ierosita_erass,7)=fluxU_erosita_erass(ierosita_erass,7)*reduce
+            fluxL_erosita_erass(ierosita_erass,7)=fluxL_erosita_erass(ierosita_erass,7)*reduce
+            call nhdeabsorb2 (0,5.,8.,0.9,nh,reduce,5)
+            flux_erosita_erass(ierosita_erass,8)=flux_erosita_erass(ierosita_erass,8)*reduce
+            fluxU_erosita_erass(ierosita_erass,8)=fluxU_erosita_erass(ierosita_erass,8)*reduce
+            fluxL_erosita_erass(ierosita_erass,8)=fluxL_erosita_erass(ierosita_erass,8)*reduce
+            call nhdeabsorb2 (0,5.,8.,0.9,nh,reduce,5)
+            flux_erosita_erass(ierosita_erass,9)=flux_erosita_erass(ierosita_erass,9)*reduce
+            fluxU_erosita_erass(ierosita_erass,9)=fluxU_erosita_erass(ierosita_erass,9)*reduce
+            fluxL_erosita_erass(ierosita_erass,9)=fluxL_erosita_erass(ierosita_erass,9)*reduce
+            call nhdeabsorb2 (0,5.,8.,0.9,nh,reduce,5)
+            flux_erosita_erass(ierosita_erass,10)=flux_erosita_erass(ierosita_erass,10)*reduce
+            fluxU_erosita_erass(ierosita_erass,10)=fluxU_erosita_erass(ierosita_erass,10)*reduce
+            fluxL_erosita_erass(ierosita_erass,10)=fluxL_erosita_erass(ierosita_erass,10)*reduce
+
+            call fluxtofdens(0.9,0.2,2.3,flux_erosita_erass(ierosita_erass,1),1.,fdens,nudens)
+            flux_erosita_erass(ierosita_erass,1)=fdens
+            frequency_erosita_erass(ierosita_erass,1)=nudens
+            call fluxtofdens(0.9,0.2,2.3,fluxU_erosita_erass(ierosita_erass,1),1.,fdens,nudens)
+            fluxU_erosita_erass(ierosita_erass,1)=fdens
+            call fluxtofdens(0.9,0.2,2.3,fluxL_erosita_erass(ierosita_erass,1),1.,fdens,nudens)
+            fluxL_erosita_erass(ierosita_erass,1)=fdens
+            call fluxtofdens(0.9,0.2,0.5,flux_erosita_erass(ierosita_erass,2),0.3,fdens,nudens)
+            flux_erosita_erass(ierosita_erass,2)=fdens
+            frequency_erosita_erass(ierosita_erass,2)=nudens
+            call fluxtofdens(0.9,0.2,0.5,fluxU_erosita_erass(ierosita_erass,2),0.3,fdens,nudens)
+            fluxU_erosita_erass(ierosita_erass,2)=fdens
+            call fluxtofdens(0.9,0.2,0.5 ,fluxL_erosita_erass(ierosita_erass,2),0.3,fdens,nudens)
+            fluxL_erosita_erass(ierosita_erass,2)=fdens
+            call fluxtofdens(0.9,0.5,1.,flux_erosita_erass(ierosita_erass,3),0.7,fdens,nudens)
+            flux_erosita_erass(ierosita_erass,3)=fdens
+            frequency_erosita_erass(ierosita_erass,3)=nudens
+            call fluxtofdens(0.9,0.5,1.,fluxU_erosita_erass(ierosita_erass,3),0.7,fdens,nudens)
+            fluxU_erosita_erass(ierosita_erass,3)=fdens
+            call fluxtofdens(0.9,0.5,1.,fluxL_erosita_erass(ierosita_erass,3),0.7,fdens,nudens)
+            fluxL_erosita_erass(ierosita_erass,3)=fdens
+            call fluxtofdens(0.9,1.,2.,flux_erosita_erass(ierosita_erass,4),1.5,fdens,nudens)
+            flux_erosita_erass(ierosita_erass,4)=fdens
+            frequency_erosita_erass(ierosita_erass,4)=nudens
+            call fluxtofdens(0.9,1.,2.,fluxU_erosita_erass(ierosita_erass,4),1.5,fdens,nudens)
+            fluxU_erosita_erass(ierosita_erass,4)=fdens
+            call fluxtofdens(0.9,1.,2.,fluxL_erosita_erass(ierosita_erass,4),1.5,fdens,nudens)
+            fluxL_erosita_erass(ierosita_erass,4)=fdens
+            call fluxtofdens(0.9,2.,5.,flux_erosita_erass(ierosita_erass,5),3.,fdens,nudens)
+            flux_erosita_erass(ierosita_erass,5)=fdens
+            frequency_erosita_erass(ierosita_erass,5)=nudens
+            call fluxtofdens(0.9,2.,5.,fluxU_erosita_erass(ierosita_erass,5),3.,fdens,nudens)
+            fluxU_erosita_erass(ierosita_erass,5)=fdens
+            call fluxtofdens(0.9,2.,5. ,fluxL_erosita_erass(ierosita_erass,5),3.,fdens,nudens)
+            fluxL_erosita_erass(ierosita_erass,5)=fdens
+            call fluxtofdens(0.9,5.,8.,flux_erosita_erass(ierosita_erass,6),1.2,fdens,nudens)
+            flux_erosita_erass(ierosita_erass,6)=fdens
+            frequency_erosita_erass(ierosita_erass,6)=nudens
+            call fluxtofdens(0.9,5.,8.,fluxU_erosita_erass(ierosita_erass,6),1.2,fdens,nudens)
+            fluxU_erosita_erass(ierosita_erass,6)=fdens
+            call fluxtofdens(0.9,5.,8.,fluxL_erosita_erass(ierosita_erass,6),1.2,fdens,nudens)
+            fluxL_erosita_erass(ierosita_erass,6)=fdens
+            call fluxtofdens(0.9,4.,10.,flux_erosita_erass(ierosita_erass,7),4.,fdens,nudens)
+            flux_erosita_erass(ierosita_erass,7)=fdens
+            frequency_erosita_erass(ierosita_erass,7)=nudens
+            call fluxtofdens(0.9,4.,10.,fluxU_erosita_erass(ierosita_erass,7),4.,fdens,nudens)
+            fluxU_erosita_erass(ierosita_erass,7)=fdens
+            call fluxtofdens(0.9,4.,10.,fluxL_erosita_erass(ierosita_erass,7),4.,fdens,nudens)
+            fluxL_erosita_erass(ierosita_erass,7)=fdens
+            call fluxtofdens(0.9,5.1,6.1,flux_erosita_erass(ierosita_erass,8),1.,fdens,nudens)
+            flux_erosita_erass(ierosita_erass,8)=fdens
+            frequency_erosita_erass(ierosita_erass,8)=nudens
+            call fluxtofdens(0.9,5.1,6.1,fluxU_erosita_erass(ierosita_erass,8),1.,fdens,nudens)
+            fluxU_erosita_erass(ierosita_erass,8)=fdens
+            call fluxtofdens(0.9,5.1,6.1,fluxL_erosita_erass(ierosita_erass,8),1.,fdens,nudens)
+            fluxL_erosita_erass(ierosita_erass,8)=fdens
+            call fluxtofdens(0.9,6.2,7.1,flux_erosita_erass(ierosita_erass,9),1.,fdens,nudens)
+            flux_erosita_erass(ierosita_erass,9)=fdens
+            frequency_erosita_erass(ierosita_erass,9)=nudens
+            call fluxtofdens(0.9,6.2,7.1,fluxU_erosita_erass(ierosita_erass,9),1.,fdens,nudens)
+            fluxU_erosita_erass(ierosita_erass,9)=fdens
+            call fluxtofdens(0.9,6.2,7.1,fluxL_erosita_erass(ierosita_erass,9),1.,fdens,nudens)
+            fluxL_erosita_erass(ierosita_erass,9)=fdens
+            call fluxtofdens(0.9,7.2,8.2,flux_erosita_erass(ierosita_erass,10),1.,fdens,nudens)
+            flux_erosita_erass(ierosita_erass,10)=fdens
+            frequency_erosita_erass(ierosita_erass,10)=nudens
+            call fluxtofdens(0.9,7.2,8.2,fluxU_erosita_erass(ierosita_erass,10),1.,fdens,nudens)
+            fluxU_erosita_erass(ierosita_erass,10)=fdens
+            call fluxtofdens(0.9,7.2,8.2,fluxL_erosita_erass(ierosita_erass,10),1.,fdens,nudens)
+            fluxL_erosita_erass(ierosita_erass,10)=fdens
+
+            if (fluxL_erosita_erass(ierosita_erass,1) .le. 0) then
+                flux_erosita_erass(ierosita_erass,1)=0
+                fluxL_erosita_erass(ierosita_erass,1)=0
+                fluxU_erosita_erass(ierosita_erass,1)=fluxU_erosita_erass(ierosita_erass,1)*3.
+            endif
+            if (fluxL_erosita_erass(ierosita_erass,2) .le. 0) then
+                flux_erosita_erass(ierosita_erass,2)=0
+                fluxL_erosita_erass(ierosita_erass,2)=0
+                fluxU_erosita_erass(ierosita_erass,2)=fluxU_erosita_erass(ierosita_erass,2)*3.
+            endif
+            if (fluxL_erosita_erass(ierosita_erass,3) .le. 0) then
+                flux_erosita_erass(ierosita_erass,3)=0
+                fluxL_erosita_erass(ierosita_erass,3)=0
+                fluxU_erosita_erass(ierosita_erass,3)=fluxU_erosita_erass(ierosita_erass,3)*3.
+            endif
+            if (fluxL_erosita_erass(ierosita_erass,4) .le. 0) then
+                flux_erosita_erass(ierosita_erass,4)=0
+                fluxL_erosita_erass(ierosita_erass,4)=0
+                fluxU_erosita_erass(ierosita_erass,4)=fluxU_erosita_erass(ierosita_erass,4)*3.
+            endif
+            if (fluxL_erosita_erass(ierosita_erass,5) .le. 0) then
+                flux_erosita_erass(ierosita_erass,5)=0
+                fluxL_erosita_erass(ierosita_erass,5)=0
+                fluxU_erosita_erass(ierosita_erass,5)=fluxU_erosita_erass(ierosita_erass,5)*3.
+            endif
+            if (fluxL_erosita_erass(ierosita_erass,6) .le. 0) then
+                flux_erosita_erass(ierosita_erass,6)=0
+                fluxL_erosita_erass(ierosita_erass,6)=0
+                fluxU_erosita_erass(ierosita_erass,6)=fluxU_erosita_erass(ierosita_erass,6)*3.
+            endif
+            if (fluxL_erosita_erass(ierosita_erass,7) .le. 0) then
+                flux_erosita_erass(ierosita_erass,7)=0
+                fluxL_erosita_erass(ierosita_erass,7)=0
+                fluxU_erosita_erass(ierosita_erass,7)=fluxU_erosita_erass(ierosita_erass,7)*3.
+            endif
+            if (fluxL_erosita_erass(ierosita_erass,8) .le. 0) then
+                flux_erosita_erass(ierosita_erass,8)=0
+                fluxL_erosita_erass(ierosita_erass,8)=0
+                fluxU_erosita_erass(ierosita_erass,8)=fluxU_erosita_erass(ierosita_erass,8)*3.
+            endif
+            if (fluxL_erosita_erass(ierosita_erass,9) .le. 0) then
+                flux_erosita_erass(ierosita_erass,9)=0
+                fluxL_erosita_erass(ierosita_erass,9)=0
+                fluxU_erosita_erass(ierosita_erass,9)=fluxU_erosita_erass(ierosita_erass,9)*3.
+            endif
+            if (fluxL_erosita_erass(ierosita_erass,10) .le. 0) then
+                flux_erosita_erass(ierosita_erass,10)=0
+                fluxL_erosita_erass(ierosita_erass,10)=0
+                fluxU_erosita_erass(ierosita_erass,10)=fluxU_erosita_erass(ierosita_erass,10)*3.
+            endif
+c         write(*,*) flux_erosita_erass(ierosita_erass,1),fluxU_erosita_erass(ierosita_erass,1),fluxL_erosita_erass(ierosita_erass,1)
+c         write(*,*) flux_erosita_erass(ierosita_erass,2),fluxU_erosita_erass(ierosita_erass,2),fluxL_erosita_erass(ierosita_erass,2)
+c         write(*,*) flux_erosita_erass(ierosita_erass,8),fluxU_erosita_erass(ierosita_erass,8),fluxL_erosita_erass(ierosita_erass,8)
+
+            CALL RXgraphic_code(flux_erosita_erass(ierosita_erass,1),'X',code)
+            write (13,'(f9.5,2x,f9.5,2x,i6)') ra_erosita_erass(ierosita_erass),dec_erosita_erass(ierosita_erass),int(code)
          ELSE IF (catalog(1:7) == 'erosita') THEN
             ierosita=ierosita+1
             ra_erosita(ierosita)=ra
@@ -2305,6 +2616,46 @@ c            ENDIF
             ENDIF
          ENDDO
          !write(*,*) const
+c        DIST SKY FOR eROSITA_eRASS
+         DO i=1,ierosita_erass
+            CALL DIST_SKY(ra_radio(k),dec_radio(k),ra_erosita_erass(i),dec_erosita_erass(i),dist)
+            min_dist = sqrt(poserr_erosita_erass(i)**2+poserr_radio(k)**2)/3600.
+            IF (dist < max(min_dist,2./3600.)) THEN
+               found = .TRUE.
+c              adding xray_type 15 for the new catalogue
+               xray_type = 15 
+               flux_x = flux_x + flux_erosita_erass(i,1)
+               ix = ix +1
+               flux_1kev(ix,k)=flux_erosita_erass(i,1)
+               uflux_1kev(ix,k)=fluxU_erosita_erass(i,1)
+               lflux_1kev(ix,k)=fluxL_erosita_erass(i,1)
+               ra_1kev(ix,k)=ra_erosita_erass(i)
+               dec_1kev(ix,k)=dec_erosita_erass(i)
+               poserr_1kev(ix,k)=poserr_erosita_erass(i)
+               distrx(ix,k)=dist*3600.
+               spec_type(ix,k)=xray_type+50
+               mjdend(ix,k)=55000.
+               mjdstart(ix,k)=55000.
+               if (ix .eq. 1) then
+                  CALL print_results (ratio,ra_radio(k),dec_radio(k),flux_radio(k),radio_type(k),
+     &                xray_type,flux_erosita_erass(i,1),const(k),ra_center,dec_center,source_type)
+               else if ((i .eq. 1) .or. (spec_type(ix,k) .ne. spec_type(ix-1,k))) then
+                  CALL print_results (ratio,ra_radio(k),dec_radio(k),flux_radio(k),radio_type(k),
+     &                xray_type,flux_erosita_erass(i,1),const(k),ra_center,dec_center,source_type)
+               endif
+               IF (source_type .GE. 0) THEN
+                  types(source_type) = types(source_type) + 1
+               ENDIF
+               do l=2,8
+                  xpts=xpts+1
+                  flux_xpts(xpts,k)=flux_erosita_erass(i,l)
+                  frequency_xpts(xpts,k)=frequency_erosita_erass(i,l)
+                  uflux_xpts(xpts,k)=fluxU_erosita_erass(i,l)
+                  lflux_xpts(xpts,k)=fluxL_erosita_erass(i,l)
+                  spec_xpts(xpts,k)=xray_type
+               enddo
+            ENDIF
+         ENDDO
 
          DO i=1,ierosita
             CALL DIST_SKY(ra_radio(k),dec_radio(k),ra_erosita(i),dec_erosita(i),dist)
@@ -2966,6 +3317,50 @@ c         if (xmm_type(i) == 1) min_dist_xmm=15./3600.
             endif
          endif
       enddo
+c     again, copied for eRASS
+      Do i=1,ierosita_erass
+         found=.false.
+         do j=1,iradio
+            call dist_sky(ra_radio(j),dec_radio(j),ra_erosita_erass(i),dec_erosita_erass(i),dist)
+            min_dist=sqrt(poserr_radio(j)**2+poserr_erosita_erass(i)**2)/3600.
+            if (dist .lt. max(min_dist,2./3600.))  found=.true.
+         enddo
+         do j=1,iother
+            if ( ( (name_other(j)(1:3) == '5BZ') .OR. (name_other(j)(1:4) == '3HSP') .or.
+     &             (name_other(j)(1:6) == 'CRATES') .or. (name_other(j)(1:3) == 'PSR') .or.
+     &      (name_other(j)(1:5) == 'mquas') .or. (name_other(j)(1:4) == 'BROS')) .AND. (ra_other(j) .gt. 0.) ) THEN
+               CALL DIST_SKY(ra_other(j),dec_other(j),ra_erosita_erass(i),dec_erosita_erass(i),dist)
+               if (dist*3600. .lt. max(poserr_erosita_erass(i),10.)) found=.true.
+            endif
+         enddo
+         if (.not. found) THEN
+            xray_type=14
+            CALL DIST_SKY(ra_center,dec_center,ra_erosita_erass(i),dec_erosita_erass(i),dist)
+            if ((errrad .ne. 0.) .and. (errmaj .eq. 0.)) then
+               if (dist .le. errrad/60.) then
+                  write(14,'(4(es10.3,2x),2(f10.5,2x),f8.3,2(2x,f10.4),2x,i2)') frequency_erosita_erass(i,1),
+     &            flux_erosita_erass(i,1),FluxU_erosita_erass(i,1),FluxL_erosita_erass(i,1),ra_erosita_erass(i),dec_erosita_erass(i),
+     &            poserr_erosita_erass(i),mjdavg,mjdavg,xray_type+50
+                  do s=2,8
+                     write(14,'(4(es10.3,2x),2(f10.5,2x),f8.3,2(2x,f10.4),2x,i2)') frequency_erosita_erass(i,s),
+     &               flux_erosita_erass(i,s),FluxU_erosita_erass(i,s),FluxL_erosita_erass(i,s),ra_erosita_erass(i),dec_erosita_erass(i),
+     &               poserr_erosita_erass(i),mjdavg,mjdavg,xray_type
+                  enddo
+               endif
+            else if ((errrad .eq. 0.) .and. (errmaj .ne. 0.)) then
+               if (dist .le. errmaj/60.) then
+                  write(14,'(4(es10.3,2x),2(f10.5,2x),f8.3,2(2x,f10.4),2x,i2)') frequency_erosita_erass(i,1),
+     &            flux_erosita_erass(i,1),FluxU_erosita_erass(i,1),FluxL_erosita_erass(i,1),ra_erosita_erass(i),dec_erosita_erass(i),
+     &            poserr_erosita_erass(i),mjdavg,mjdavg,xray_type+50
+                  do s=2,8
+                     write(14,'(4(es10.3,2x),2(f10.5,2x),f8.3,2(2x,f10.4),2x,i2)') frequency_erosita_erass(i,s),
+     &               flux_erosita_erass(i,s),FluxU_erosita_erass(i,s),FluxL_erosita_erass(i,s),ra_erosita_erass(i),dec_erosita_erass(i),
+     &               poserr_erosita_erass(i),mjdavg,mjdavg,xray_type
+                  enddo
+               endif
+            endif
+         endif
+      enddo
 
       Do i=1,ierosita
          found=.false.
@@ -3274,6 +3669,20 @@ c     &            flux_swift(j,1),FluxU_swift(j,1),FluxL_swift(j,1),mjdst_swift
                   endif
                endif
             enddo
+c           Another DIST_SKY call??
+            do j=1,ierosita_erass
+               call DIST_SKY(ra_other(l),dec_other(l),ra_erosita_erass(j),dec_erosita_erass(j),dist)
+               if (dist*3600. < max(poserr_erosita_erass(j),10.)) THEN
+                  xray_type=14
+                  write(12,'(4(es10.3,2x),2(f10.5,2x),f8.3,2(2x,f10.4),2x,i2)') frequency_erosita_erass(j,1),
+     &                 flux_erosita_erass(j,1),FluxU_erosita_erass(j,1),FluxL_erosita_erass(j,1),ra_erosita_erass(j),dec_erosita_erass(j),
+     &                   poserr_erosita_erass(j),mjdavg,mjdavg,xray_type+50
+                  do s=2,8
+                     write(12,'(4(es10.3,2x),i2)') frequency_erosita_erass(j,s),flux_erosita_erass(j,s),FluxU_erosita_erass(j,s),
+     &                     FluxL_erosita_erass(j,s),xray_type
+                  enddo
+               endif
+            enddo
             do j=1,ierosita
                call DIST_SKY(ra_other(l),dec_other(l),ra_erosita(j),dec_erosita(j),dist)
                if (dist*3600. < max(poserr_erosita(j),10.)) THEN
@@ -3485,6 +3894,20 @@ c     &            flux_swift(j,1),FluxU_swift(j,1),FluxL_swift(j,1),mjdst_swift
             endif
          endif
       enddo
+c     YET ANOTHER Dist Sky call
+      do j=1,ierosita_erass
+         call DIST_SKY(ra_center,dec_center,ra_erosita_erass(j),dec_erosita_erass(j),dist)
+         if ( dist*3600. .lt. max(poserr_erosita_erass(j),2.) ) then
+            xray_type=14
+            write(12,'(4(es10.3,2x),2(f10.5,2x),f8.3,2(2x,f10.4),2x,i2)') frequency_erosita_erass(j,1),
+     &                 flux_erosita_erass(j,1),FluxU_erosita_erass(j,1),FluxL_erosita_erass(j,1),ra_erosita_erass(j),dec_erosita_erass(j),
+     &                   poserr_erosita_erass(j),mjdavg,mjdavg,xray_type+50
+            do s=2,8
+               write(12,'(4(es10.3,2x),i2)') frequency_erosita_erass(j,s),flux_erosita_erass(j,s),FluxU_erosita_erass(j,s),
+     &                     FluxL_erosita_erass(j,s),xray_type
+            enddo
+         endif
+      enddo
       do j=1,ierosita
          call DIST_SKY(ra_center,dec_center,ra_erosita(j),dec_erosita(j),dist)
          if ( dist*3600. .lt. max(poserr_erosita(j),2.) ) then
@@ -3511,8 +3934,10 @@ c     &            flux_swift(j,1),FluxU_swift(j,1),FluxL_swift(j,1),mjdst_swift
       deallocate(poserr_chandra,ra_chandra,dec_chandra)
       deallocate(flux_rosat,Ferr_rosat,FluxU_rosat,FluxL_rosat,frequency_rosat)
       deallocate(flux_chandra,FluxU_chandra,FluxL_chandra,frequency_chandra)
+      deallocate(poserr_erosita_erass,ra_erosita_erass,dec_erosita_erass)
       deallocate(poserr_erosita,ra_erosita,dec_erosita)
       deallocate(poserr_bmw,ra_bmw,dec_bmw)
+      deallocate(flux_erosita_erass,fluxL_erosita_erass,fluxU_erosita_erass,Ferr_erosita_erass,frequency_erosita_erass)
       deallocate(flux_erosita,fluxL_erosita,fluxU_erosita,Ferr_erosita,frequency_erosita)
       deallocate(flux_bmw,fluxL_bmw,fluxU_bmw,Ferr_bmw,frequency_bmw)
       deallocate(ipc_type,poserr_ipc,ra_ipc,dec_ipc)
@@ -3580,10 +4005,13 @@ c      IF (ratio < 0.) RETURN
          xmission='MAXISSC'
       ELSE IF (xray_type == 14) THEN
          xmission='eROSITA-EDR'
+      ELSE IF (xray_type == 15) THEN
+         xmission='eROSITARASS1'
       ELSE
          xmission='UNKNOWN'
       ENDIF
       source_type = 0
+c     eROSITA-eRASS1 has too many characters, it ruins the formatting of Sed.csv file, cut to eROSITARASS1
 c      print *,' xmission, flux-x ',xmission,flux
       CALL DIST_SKY(ra,dec,ra_center,dec_center,dist)
       dist=dist*60.

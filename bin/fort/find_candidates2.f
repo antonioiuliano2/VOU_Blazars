@@ -364,7 +364,7 @@ c         write(*,*) "redshift",zsource(1:isource)
          npt(sfound)=npt(sfound)+1
          read(12,'(es10.3,a)',end=201,err=201) frequency(npt(sfound),sfound),string
          !write(*,*) frequency(npt(sfound),sfound)
-         if ((frequency(npt(sfound),sfound) .lt. 1.e10) .or. (frequency(npt(sfound),sfound) .eq. 2.418e17)) then
+         if ((frequency(npt(sfound),sfound) .lt. 1.e10) .or. ((frequency(npt(sfound),sfound) .eq. 2.418e17) .and. (lenact(string) .eq. 98 ))) then
             read(string(1:lenact(string)),*) flux(npt(sfound),sfound),uflux(npt(sfound),sfound),lflux(npt(
      &      sfound),sfound),ra_rrxx(npt(sfound),sfound),dec_rrxx(npt(sfound),sfound),epos(npt(sfound),sfound),
      &      mjdst_rrxx(npt(sfound),sfound),mjded_rrxx(npt(sfound),sfound),spec_type(npt(sfound),sfound)
@@ -424,6 +424,8 @@ c         write(*,*) "redshift",zsource(1:isource)
      &      rrxx_type(npt(sfound),sfound)='MAXISSC'
          if ((spec_type(npt(sfound),sfound) .eq. 64) .or. (spec_type(npt(sfound),sfound) .eq. 14))
      &      rrxx_type(npt(sfound),sfound)='eROSITA-EDR'
+         if ((spec_type(npt(sfound),sfound) .eq. 65) .or. (spec_type(npt(sfound),sfound) .eq. 15))
+     &      rrxx_type(npt(sfound),sfound)='eROSITARASS1'
 
          else
             if (spec_type(npt(sfound),sfound) .eq. 2) rrxx_type(npt(sfound),sfound)='FIRST'
