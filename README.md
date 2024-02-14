@@ -1,4 +1,4 @@
-# VOU_Blazars
+# VOU_Blazars (test update for eROSITA-eRASS1)
 
 VOU-BLazars is a tool designed to identify blazars in a given sky region based on multi-frequency information retrieved using Virtual Observatory protocols. This is the first version of the tool; a technical paper describing the tool could be found on Astronomy and Computing, 2020, 30, 100350. Any comments and suggestions are welcomed.
 
@@ -20,11 +20,11 @@ See below for dependencies setup.
 
 * [PGPlot](http://www.astro.caltech.edu/~tjp/pgplot/)
 * GFortran
-* Python 2.7
+* Python 3.8.18
 * [EADA and conesearch pipline](https://github.com/chbrandt/eada)
 
 
-### Setup EADA/Conesearch pipeline
+### Setup EADA/Conesearch pipeline (due to pyvo new version requirement, temporarily using my fork of the eada repository)
 
 VOU-Blazars required conesearch pipeline, External Archive Data Access (EADA) Tools, to access VO data services.
 If you use [Anaconda Python Distribution](https://www.anaconda.com/download/), you can install EADA in its own (virtual) environment as following.
@@ -32,11 +32,12 @@ These steps allow you to create an python conda environment called eada, and all
 See [EADA and conesearch pipline](https://github.com/chbrandt/eada) for more details.
 
 ```bash
-$ conda create -n eada python=2 pip ipython
+$ conda create -n eada python=3.8 pip ipython
 $ conda activate eada
-$ pip install https://github.com/chbrandt/eada/archive/0.9.7.5.zip
+$ git clone https://github.com/antonioiuliano2/eada
+$ python setup.py install --user
 ```
-Note that the Conessearch pipeline till now only support runing with Python 2.7. And, here is just an example to install eada tool version 0.9.7.4, in future, there might be new version of eada updated.
+(My branch is a fork with the eada master version (after 1.1), so it Python3 compatible and it changes the dependencies for the updated pyvo required by new catalogs)
 
 
 ### Setup PGPlot 
