@@ -3334,7 +3334,7 @@ c     again, copied for eRASS
             endif
          enddo
          if (.not. found) THEN
-            xray_type=14
+            xray_type=15
             CALL DIST_SKY(ra_center,dec_center,ra_erosita_erass(i),dec_erosita_erass(i),dist)
             if ((errrad .ne. 0.) .and. (errmaj .eq. 0.)) then
                if (dist .le. errrad/60.) then
@@ -3673,7 +3673,7 @@ c           Another DIST_SKY call??
             do j=1,ierosita_erass
                call DIST_SKY(ra_other(l),dec_other(l),ra_erosita_erass(j),dec_erosita_erass(j),dist)
                if (dist*3600. < max(poserr_erosita_erass(j),10.)) THEN
-                  xray_type=14
+                  xray_type=15
                   write(12,'(4(es10.3,2x),2(f10.5,2x),f8.3,2(2x,f10.4),2x,i2)') frequency_erosita_erass(j,1),
      &                 flux_erosita_erass(j,1),FluxU_erosita_erass(j,1),FluxL_erosita_erass(j,1),ra_erosita_erass(j),dec_erosita_erass(j),
      &                   poserr_erosita_erass(j),mjdavg,mjdavg,xray_type+50
@@ -3898,7 +3898,7 @@ c     YET ANOTHER Dist Sky call
       do j=1,ierosita_erass
          call DIST_SKY(ra_center,dec_center,ra_erosita_erass(j),dec_erosita_erass(j),dist)
          if ( dist*3600. .lt. max(poserr_erosita_erass(j),2.) ) then
-            xray_type=14
+            xray_type=15
             write(12,'(4(es10.3,2x),2(f10.5,2x),f8.3,2(2x,f10.4),2x,i2)') frequency_erosita_erass(j,1),
      &                 flux_erosita_erass(j,1),FluxU_erosita_erass(j,1),FluxL_erosita_erass(j,1),ra_erosita_erass(j),dec_erosita_erass(j),
      &                   poserr_erosita_erass(j),mjdavg,mjdavg,xray_type+50
