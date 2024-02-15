@@ -1763,27 +1763,27 @@ c           Naturally, the last one does not end with ',' so it is replaced by '
             flux_erosita_erass(ierosita_erass,4)=flux_erosita_erass(ierosita_erass,4)*reduce
             fluxU_erosita_erass(ierosita_erass,4)=fluxU_erosita_erass(ierosita_erass,4)*reduce
             fluxL_erosita_erass(ierosita_erass,4)=fluxL_erosita_erass(ierosita_erass,4)*reduce
-            call nhdeabsorb2 (0,2.,4.5,0.9,nh,reduce,5)
+            call nhdeabsorb2 (0,2.,5.,0.9,nh,reduce,5)
             flux_erosita_erass(ierosita_erass,5)=flux_erosita_erass(ierosita_erass,5)*reduce
             fluxU_erosita_erass(ierosita_erass,5)=fluxU_erosita_erass(ierosita_erass,5)*reduce
             fluxL_erosita_erass(ierosita_erass,5)=fluxL_erosita_erass(ierosita_erass,5)*reduce
-            call nhdeabsorb2 (0,0.5,2.,0.9,nh,reduce,5)
+            call nhdeabsorb2 (0,5.,8.,0.9,nh,reduce,5)
             flux_erosita_erass(ierosita_erass,6)=flux_erosita_erass(ierosita_erass,6)*reduce
             fluxU_erosita_erass(ierosita_erass,6)=fluxU_erosita_erass(ierosita_erass,6)*reduce
             fluxL_erosita_erass(ierosita_erass,6)=fluxL_erosita_erass(ierosita_erass,6)*reduce
-            call nhdeabsorb2 (0,2.3,5.,0.9,nh,reduce,5)
+            call nhdeabsorb2 (0,4.,10.,0.9,nh,reduce,5)
             flux_erosita_erass(ierosita_erass,7)=flux_erosita_erass(ierosita_erass,7)*reduce
             fluxU_erosita_erass(ierosita_erass,7)=fluxU_erosita_erass(ierosita_erass,7)*reduce
             fluxL_erosita_erass(ierosita_erass,7)=fluxL_erosita_erass(ierosita_erass,7)*reduce
-            call nhdeabsorb2 (0,5.,8.,0.9,nh,reduce,5)
+            call nhdeabsorb2 (0,5.1,6.1,0.9,nh,reduce,5)
             flux_erosita_erass(ierosita_erass,8)=flux_erosita_erass(ierosita_erass,8)*reduce
             fluxU_erosita_erass(ierosita_erass,8)=fluxU_erosita_erass(ierosita_erass,8)*reduce
             fluxL_erosita_erass(ierosita_erass,8)=fluxL_erosita_erass(ierosita_erass,8)*reduce
-            call nhdeabsorb2 (0,5.,8.,0.9,nh,reduce,5)
+            call nhdeabsorb2 (0,6.2,7.1,0.9,nh,reduce,5)
             flux_erosita_erass(ierosita_erass,9)=flux_erosita_erass(ierosita_erass,9)*reduce
             fluxU_erosita_erass(ierosita_erass,9)=fluxU_erosita_erass(ierosita_erass,9)*reduce
             fluxL_erosita_erass(ierosita_erass,9)=fluxL_erosita_erass(ierosita_erass,9)*reduce
-            call nhdeabsorb2 (0,5.,8.,0.9,nh,reduce,5)
+            call nhdeabsorb2 (0,7.2,8.2,0.9,nh,reduce,5)
             flux_erosita_erass(ierosita_erass,10)=flux_erosita_erass(ierosita_erass,10)*reduce
             fluxU_erosita_erass(ierosita_erass,10)=fluxU_erosita_erass(ierosita_erass,10)*reduce
             fluxL_erosita_erass(ierosita_erass,10)=fluxL_erosita_erass(ierosita_erass,10)*reduce
@@ -1823,40 +1823,40 @@ c           Naturally, the last one does not end with ',' so it is replaced by '
             fluxU_erosita_erass(ierosita_erass,5)=fdens
             call fluxtofdens(0.9,2.,5. ,fluxL_erosita_erass(ierosita_erass,5),3.,fdens,nudens)
             fluxL_erosita_erass(ierosita_erass,5)=fdens
-            call fluxtofdens(0.9,5.,8.,flux_erosita_erass(ierosita_erass,6),1.2,fdens,nudens)
+            call fluxtofdens(0.9,5.,8.,flux_erosita_erass(ierosita_erass,6),6.5,fdens,nudens)
             flux_erosita_erass(ierosita_erass,6)=fdens
             frequency_erosita_erass(ierosita_erass,6)=nudens
-            call fluxtofdens(0.9,5.,8.,fluxU_erosita_erass(ierosita_erass,6),1.2,fdens,nudens)
+            call fluxtofdens(0.9,5.,8.,fluxU_erosita_erass(ierosita_erass,6),6.5,fdens,nudens)
             fluxU_erosita_erass(ierosita_erass,6)=fdens
-            call fluxtofdens(0.9,5.,8.,fluxL_erosita_erass(ierosita_erass,6),1.2,fdens,nudens)
+            call fluxtofdens(0.9,5.,8.,fluxL_erosita_erass(ierosita_erass,6),6.5,fdens,nudens)
             fluxL_erosita_erass(ierosita_erass,6)=fdens
-            call fluxtofdens(0.9,4.,10.,flux_erosita_erass(ierosita_erass,7),4.,fdens,nudens)
+            call fluxtofdens(0.9,4.,10.,flux_erosita_erass(ierosita_erass,7),7.,fdens,nudens)
             flux_erosita_erass(ierosita_erass,7)=fdens
             frequency_erosita_erass(ierosita_erass,7)=nudens
-            call fluxtofdens(0.9,4.,10.,fluxU_erosita_erass(ierosita_erass,7),4.,fdens,nudens)
+            call fluxtofdens(0.9,4.,10.,fluxU_erosita_erass(ierosita_erass,7),7.,fdens,nudens)
             fluxU_erosita_erass(ierosita_erass,7)=fdens
-            call fluxtofdens(0.9,4.,10.,fluxL_erosita_erass(ierosita_erass,7),4.,fdens,nudens)
+            call fluxtofdens(0.9,4.,10.,fluxL_erosita_erass(ierosita_erass,7),7.,fdens,nudens)
             fluxL_erosita_erass(ierosita_erass,7)=fdens
-            call fluxtofdens(0.9,5.1,6.1,flux_erosita_erass(ierosita_erass,8),1.,fdens,nudens)
+            call fluxtofdens(0.9,5.1,6.1,flux_erosita_erass(ierosita_erass,8),5.6,fdens,nudens)
             flux_erosita_erass(ierosita_erass,8)=fdens
             frequency_erosita_erass(ierosita_erass,8)=nudens
-            call fluxtofdens(0.9,5.1,6.1,fluxU_erosita_erass(ierosita_erass,8),1.,fdens,nudens)
+            call fluxtofdens(0.9,5.1,6.1,fluxU_erosita_erass(ierosita_erass,8),5.6,fdens,nudens)
             fluxU_erosita_erass(ierosita_erass,8)=fdens
-            call fluxtofdens(0.9,5.1,6.1,fluxL_erosita_erass(ierosita_erass,8),1.,fdens,nudens)
+            call fluxtofdens(0.9,5.1,6.1,fluxL_erosita_erass(ierosita_erass,8),5.6,fdens,nudens)
             fluxL_erosita_erass(ierosita_erass,8)=fdens
-            call fluxtofdens(0.9,6.2,7.1,flux_erosita_erass(ierosita_erass,9),1.,fdens,nudens)
+            call fluxtofdens(0.9,6.2,7.1,flux_erosita_erass(ierosita_erass,9),6.7,fdens,nudens)
             flux_erosita_erass(ierosita_erass,9)=fdens
             frequency_erosita_erass(ierosita_erass,9)=nudens
-            call fluxtofdens(0.9,6.2,7.1,fluxU_erosita_erass(ierosita_erass,9),1.,fdens,nudens)
+            call fluxtofdens(0.9,6.2,7.1,fluxU_erosita_erass(ierosita_erass,9),6.7,fdens,nudens)
             fluxU_erosita_erass(ierosita_erass,9)=fdens
-            call fluxtofdens(0.9,6.2,7.1,fluxL_erosita_erass(ierosita_erass,9),1.,fdens,nudens)
+            call fluxtofdens(0.9,6.2,7.1,fluxL_erosita_erass(ierosita_erass,9),6.7,fdens,nudens)
             fluxL_erosita_erass(ierosita_erass,9)=fdens
-            call fluxtofdens(0.9,7.2,8.2,flux_erosita_erass(ierosita_erass,10),1.,fdens,nudens)
+            call fluxtofdens(0.9,7.2,8.2,flux_erosita_erass(ierosita_erass,10),7.7,fdens,nudens)
             flux_erosita_erass(ierosita_erass,10)=fdens
             frequency_erosita_erass(ierosita_erass,10)=nudens
-            call fluxtofdens(0.9,7.2,8.2,fluxU_erosita_erass(ierosita_erass,10),1.,fdens,nudens)
+            call fluxtofdens(0.9,7.2,8.2,fluxU_erosita_erass(ierosita_erass,10),7.7,fdens,nudens)
             fluxU_erosita_erass(ierosita_erass,10)=fdens
-            call fluxtofdens(0.9,7.2,8.2,fluxL_erosita_erass(ierosita_erass,10),1.,fdens,nudens)
+            call fluxtofdens(0.9,7.2,8.2,fluxL_erosita_erass(ierosita_erass,10),7.7,fdens,nudens)
             fluxL_erosita_erass(ierosita_erass,10)=fdens
 
             if (fluxL_erosita_erass(ierosita_erass,1) .le. 0) then
