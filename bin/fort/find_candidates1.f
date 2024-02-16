@@ -2646,7 +2646,7 @@ c              adding xray_type 15 for the new catalogue
                IF (source_type .GE. 0) THEN
                   types(source_type) = types(source_type) + 1
                ENDIF
-               do l=2,8
+               do l=2,10
                   xpts=xpts+1
                   flux_xpts(xpts,k)=flux_erosita_erass(i,l)
                   frequency_xpts(xpts,k)=frequency_erosita_erass(i,l)
@@ -3902,7 +3902,7 @@ c     YET ANOTHER Dist Sky call
             write(12,'(4(es10.3,2x),2(f10.5,2x),f8.3,2(2x,f10.4),2x,i2)') frequency_erosita_erass(j,1),
      &                 flux_erosita_erass(j,1),FluxU_erosita_erass(j,1),FluxL_erosita_erass(j,1),ra_erosita_erass(j),dec_erosita_erass(j),
      &                   poserr_erosita_erass(j),mjdavg,mjdavg,xray_type+50
-            do s=2,8
+            do s=2,10
                write(12,'(4(es10.3,2x),i2)') frequency_erosita_erass(j,s),flux_erosita_erass(j,s),FluxU_erosita_erass(j,s),
      &                     FluxL_erosita_erass(j,s),xray_type
             enddo
