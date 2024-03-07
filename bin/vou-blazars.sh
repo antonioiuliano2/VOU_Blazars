@@ -265,6 +265,7 @@ echo conesearch --db ${HERE}/cats1.ini --catalog IPCSL --ra $ranh --dec $decnh -
 echo conesearch --db ${HERE}/cats1.ini --catalog Chandra-CSC2 --ra $ranh --dec $decnh --radius $sfov --runit arcmin --columns default -o tmp/${pidnm}chandracsc2.1.csv >> tmp/${pidnm}vosearch.txt
 echo conesearch --db ${HERE}/cats1.ini --catalog eROSITA-EDR --ra $ranh --dec $decnh --radius $sfov --runit arcmin --columns default -o tmp/${pidnm}erosita.1.csv >> tmp/${pidnm}vosearch.txt
 echo conesearch --db ${HERE}/cats1.ini --catalog eROSITARASS1 --ra $ranh --dec $decnh --radius $sfov --runit arcmin --columns default -o tmp/${pidnm}erosita_erass.1.csv >> tmp/${pidnm}vosearch.txt
+echo conesearch --db ${HERE}/cats1.ini --catalog eRASS1-S --ra $ranh --dec $decnh --radius $sfov --runit arcmin --columns default -o tmp/${pidnm}erosita_erass_s.1.csv >> tmp/${pidnm}vosearch.txt
 #echo conesearch --db ${HERE}/cats1.ini --catalog MAXISSC --ra $ranh --dec $decnh --radius $sfov --runit arcmin --columns default -o tmp/${pidnm}maxissc.1.csv >> tmp/${pidnm}vosearch.txt
 #echo conesearch --db ${HERE}/cats1.ini --catalog MAXIGSC --ra $ranh --dec $decnh --radius $sfov --runit arcmin --columns default -o tmp/${pidnm}maxigsc.1.csv >> tmp/${pidnm}vosearch.txt
 if [ $runmode == f ]; then #skip the catalogs that we don't plot its data on SED
